@@ -18,7 +18,6 @@
 
 ## Getting started
 
-* Fullfill a SwitchRole on your CLI with `aws-mfa` or `awsume` or any other mechanism.
 * This is a `Python CDK App`:
     * `source .env/bin/activate`
     * `pip install git-remote-codecommit`
@@ -71,7 +70,7 @@ Name: CustomVPC or Custom_VPC or Custom-VPC or customvpc # does not matter
 ...
 ```
 
-## Inspiratio/Source
+## Inspiration of this project
 
 * AWS Blogpostfrom 2017: https://aws.amazon.com/blogs/devops/aws-service-catalog-sync-code/
 * And its Repo: https://github.com/aws-samples/aws-pipeline-to-service-catalog
