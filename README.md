@@ -76,7 +76,7 @@ app.synth()
 * All fields in `config_{}.ini` are necessary.
 * To deprecate a product, delete the corresponding section within `config.ini`. The deletion takes place, while a new product or an updated version of existing product will be pushed.
 
-##Restrictions
+## Restrictions
 
 * Due to IAM Role settings, we cannot protect certain branches.
 * Use `feature/name_of_feature` for development.
@@ -94,6 +94,14 @@ app.synth()
 Name: CustomVPC or Custom_VPC or Custom-VPC or customvpc # does not matter
 ...
 ```
+
+## Products exmaples
+
+![Reporting Product](./report.png)
+
+![ETL Product](./etl_architecture.png)
+
+![Data Science Product](./ds_architecture.png)
 
 ## Inspiration/Source
 
