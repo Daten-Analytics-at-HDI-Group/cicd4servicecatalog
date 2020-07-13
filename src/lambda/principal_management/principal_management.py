@@ -24,7 +24,7 @@ auto_codecommit_client = boto3.client("codecommit")
 
 # List of standard user roles for each account
 iam_role_list = [
-    "CrossAccountSuperAdmin",
+    "CrossAccountAdmin",
 ]
 
 
@@ -50,7 +50,7 @@ def disassociate_principal_within_this_account(
             )
         except ClientError as e:
             if e.response["Error"]["Code"] == "ResourceNotFoundException":
-                logger.error("Principal does not exists ... {}".fomrat(e))
+                logger.error("Principal does not exists ... {}".forat(e))
                 pass
         except Exception as e:
             logger.error("Error while disassociating principals ... {}".format(e))

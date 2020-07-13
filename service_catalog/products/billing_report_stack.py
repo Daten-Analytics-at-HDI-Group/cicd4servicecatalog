@@ -39,7 +39,7 @@ class ReportStack(core.Stack):
         # App name
         app_name = core.CfnParameter(
             self,
-            id="AppNameBilling",
+            id="AppName",
             description="Billing alerts and reports via Lambda, Budgets, SNS and S3. So far the email is unformatted.",
             type="String",
             default="StandardMDPBillingApp",
@@ -61,9 +61,6 @@ class ReportStack(core.Stack):
         # Thresholds for Alerts in Budgets
 
         thresholds_list = [
-            # 10,
-            # 25,
-            # 50,
             100,
             250,
             500,

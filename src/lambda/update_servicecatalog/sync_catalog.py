@@ -35,7 +35,7 @@ auto_codecommit_client = boto3.client("codecommit")
 
 # List of standard user roles for each account
 iam_role_list = [
-    "CrossAccountSuperAdmin",
+    "CrossAccountAdmin",
 ]
 
 # Local role name: Launch Constraint
@@ -615,7 +615,6 @@ def service_catalog_janitor(event, context):
     logger.info("Found the following user parameters ...")
     logger.info(params)
 
-    # commit_id = params["commit_id"]
     portfolio_id = params["portfolio_id"]
     updated_files = params["modified_files"]
     new_files = params["added_files"]

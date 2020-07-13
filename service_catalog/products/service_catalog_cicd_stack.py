@@ -81,10 +81,10 @@ class ServiceCatalogCICDStack(core.Stack):
         # IAM Role and Policy parameter
         role_name = core.CfnParameter(
             self,
-            id="C3ConstraintRoleName-{}".format(branch),
+            id="ConstraintRoleName-{}".format(branch),
             description="Name of the launch constraint role",
             type="String",
-            default="CrossAccountSuperAdmin",
+            default="CrossAccountAdmin",
         )
 
         # ===============================
@@ -351,50 +351,48 @@ class ServiceCatalogCICDStack(core.Stack):
 
         cr_remove_products.node.add_dependency(portfolio)
 
-        # TODO: Accept Portfolio share principal management
-        # iam_role_list = [
-        #     "CrossAccountSuperAdmin",
-        # ]
-        # if branch == "master":
-        #     for idx, account in enumerate(account_list):
-        #         _servicecatalog.CfnPortfolioShare(
-        #             self,
-        #             id="PortfolioSharing-{}-{}".format(branch, idx),
-        #             account_id=account,
-        #             portfolio_id=portfolio.ref,
-        #             accept_language="en",
-        #         )
-        #     for idx, role in enumerate(iam_role_list):
-        #         _servicecatalog.CfnPortfolioPrincipalAssociation(
-        #             self,
-        #             id="PrincipalAssociation-{}-{}".format(branch, idx),
-        #             portfolio_id=portfolio.ref,
-        #             principal_arn="arn:aws:iam::{}:role/{}".format(
-        #                 core.Aws.ACCOUNT_ID, role
-        #             ),
-        #             principal_type="IAM",
-        #             accept_language="en",
-        #         )
-        #     core.CfnOutput(
-        #         self, id="PortfolioId-{}".format(branch), value=portfolio.ref
-        #     )
-        #     tagging_list.append(portfolio)
-        # else:
-        #     for idx, role in enumerate(iam_role_list):
-        #         _servicecatalog.CfnPortfolioPrincipalAssociation(
-        #             self,
-        #             id="PrincipalAssociation-{}-{}".format(branch, idx),
-        #             portfolio_id=portfolio.ref,
-        #             principal_arn="arn:aws:iam::{}:role/{}".format(
-        #                 core.Aws.ACCOUNT_ID, role
-        #             ),
-        #             principal_type="IAM",
-        #             accept_language="en",
-        #         )
-        #     core.CfnOutput(
-        #         self, id="PortfolioId-{}".format(branch), value=portfolio.ref
-        #     )
-        #     tagging_list.append(portfolio)
+        iam_role_list = [role_name.value_as_string]
+        if branch == "master":
+            # TODO: Accept Portfolio share principal management
+            #     for idx, account in enumerate(account_list):
+            #         _servicecatalog.CfnPortfolioShare(
+            #             self,
+            #             id="PortfolioSharing-{}-{}".format(branch, idx),
+            #             account_id=account,
+            #             portfolio_id=portfolio.ref,
+            #             accept_language="en",
+            #         )
+            for idx, role in enumerate(iam_role_list):
+                _servicecatalog.CfnPortfolioPrincipalAssociation(
+                    self,
+                    id="PrincipalAssociation-{}-{}".format(branch, idx),
+                    portfolio_id=portfolio.ref,
+                    principal_arn="arn:aws:iam::{}:role/{}".format(
+                        core.Aws.ACCOUNT_ID, role
+                    ),
+                    principal_type="IAM",
+                    accept_language="en",
+                )
+            core.CfnOutput(
+                self, id="PortfolioId-{}".format(branch), value=portfolio.ref
+            )
+            tagging_list.append(portfolio)
+        else:
+            for idx, role in enumerate(iam_role_list):
+                _servicecatalog.CfnPortfolioPrincipalAssociation(
+                    self,
+                    id="PrincipalAssociation-{}-{}".format(branch, idx),
+                    portfolio_id=portfolio.ref,
+                    principal_arn="arn:aws:iam::{}:role/{}".format(
+                        core.Aws.ACCOUNT_ID, role
+                    ),
+                    principal_type="IAM",
+                    accept_language="en",
+                )
+            core.CfnOutput(
+                self, id="PortfolioId-{}".format(branch), value=portfolio.ref
+            )
+            tagging_list.append(portfolio)
 
         # ##############################################################
         # Lambda Permissions

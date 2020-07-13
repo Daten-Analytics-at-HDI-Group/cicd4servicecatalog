@@ -21,7 +21,8 @@ app = core.App()
 # ##############################################################
 
 # TODO: Changes feature/name_of_feature accordingly
-branches = ["master", "dmz", "feature-improveS3security"]
+branches = ["master", "dmz", "feature-billing"]
+environments = ["root", "sandbox"]
 
 for branch in branches:
     ServiceCatalogCICDStack(
@@ -31,31 +32,27 @@ for branch in branches:
         sandbox_account=sandbox_account_id,
     )
 
-PORTFOLIO_ID_MASTER = "port-2hlps2tljtefa"
-PORTFOLIO_ID_DMZ = "port-f3a2s5istcfuy"
-PORTFOLIO_ID_FEATURE = ""
+# PORTFOLIO_ID_MASTER = "port-2hlps2tljtefa"
+# PORTFOLIO_ID_DMZ = "port-f3a2s5istcfuy"
+# PORTFOLIO_ID_FEATURE = "port-23etv2zibn3ck"
 
-portfolio_ids = [PORTFOLIO_ID_MASTER, PORTFOLIO_ID_DMZ, PORTFOLIO_ID_FEATURE]
+# portfolio_ids = [PORTFOLIO_ID_MASTER, PORTFOLIO_ID_DMZ, PORTFOLIO_ID_FEATURE]
 
-for env in environments:
-    for branch, portfolio_id in zip(branches, portfolio_ids):
-        ServiceCatalogCICDDependency(
-            app,
-            "hd-{}-service-catalog-dependency-{}".format(env, branch),
-            branch=branch,
-            portfolio_id=portfolio_id,
-            env=env,
-            dev_account=dev_account_id,
-            uat_account=uat_account_id,
-            prod_account=prod_account_id,
-            auto_account=auto_account_id,
-        )
+# for env in environments:
+#     for branch, portfolio_id in zip(branches, portfolio_ids):
+#         ServiceCatalogCICDDependency(
+#             app,
+#             "hd-{}-service-catalog-dependency-{}".format(env, branch),
+#             branch=branch,
+#             portfolio_id=portfolio_id,
+#             env=env,
+#         )
 
 # ##############################################################
 # Branching concept for Products
 # ##############################################################
 
-product_branch = "feauture"
+product_branch = "dmz"
 
 ReportStack(
     app, "hd-billing-alerts-product-{}".format(product_branch), branch=product_branch
