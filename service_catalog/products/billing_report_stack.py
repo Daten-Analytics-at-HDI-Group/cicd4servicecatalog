@@ -49,7 +49,7 @@ class ReportStack(core.Stack):
         # Email
         email = core.CfnParameter(
             self,
-            id="Email",
+            id="EmailDistributor",
             description="An email address. Best suited: HDI email distributor, because of the 10 subscription hard limit.",
             type="String",
             default="YOUR@EMAIL.COM",

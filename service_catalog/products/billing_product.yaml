@@ -3,7 +3,7 @@ Parameters:
     Type: String
     Default: StandardMDPBillingApp
     Description: Billing alerts and reports via Lambda, Budgets, SNS and S3. So far the email is unformatted.
-  Email:
+  EmailDistributor:
     Type: String
     Default: YOUR@EMAIL.COM
     Description: "An email address. Best suited: HDI email distributor, because of the 10 subscription hard limit."
@@ -25,7 +25,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-100-dmz
@@ -46,7 +46,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-250-dmz
@@ -67,7 +67,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-500-dmz
@@ -88,7 +88,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-750-dmz
@@ -109,7 +109,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-1000-dmz
@@ -130,7 +130,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-1500-dmz
@@ -151,7 +151,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-2000-dmz
@@ -172,7 +172,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-3000-dmz
@@ -193,7 +193,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-4000-dmz
@@ -214,7 +214,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - Address:
-                Ref: Email
+                Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
       aws:cdk:path: hd-billing-alerts-product-dmz/Budget-5000-dmz
