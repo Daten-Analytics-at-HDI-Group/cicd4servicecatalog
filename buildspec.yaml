@@ -1,0 +1,112 @@
+version: 0.2
+
+env:
+  shell: bash
+phases:
+  build:
+    commands:
+      - |
+        declare -a RELEVANT_FILES
+        declare -a STACKS
+        for i in $(echo "${FILES_ADDED[@]}" | tr "," "\n")
+        do
+          case "$i" in
+          "service_catalog/products/"* ) echo "Update matches"; RELEVANT_FILES=("${RELEVANT_FILES[@]}" "$i");;
+          *) echo "No match";;
+          esac
+        done
+      - |
+        for i in $(echo "${FILES_MODIFIED[@]}" | tr "," "\n")
+        do
+          case "$i" in
+          "service_catalog/products/"* ) echo "Update matches"; RELEVANT_FILES=("${RELEVANT_FILES[@]}" "$i");;
+          *) echo "No match";;
+          esac
+        done
+        echo "${RELEVANT_FILES[@]}"
+        if [ ${#RELEVANT_FILES[@]} -eq 0 ]; then
+          echo "#---No modified or newly added templates---#"
+          echo "#---Stopping CodeBuild---#"
+          aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+        else
+          echo "#---Validating modified or newly added templates---#"
+          for f in "${RELEVANT_FILES[@]}"
+          do
+            echo "$f"
+            echo "#---Generating random String for stack and resource name---#"
+            HASH=$(openssl rand -hex 6)
+            STACK_NAME="hd-auto-temporary-test-stack-$HASH"
+            STACKS=("${STACKS[@]}" "$STACK_NAME")
+            echo "#---Starting Smoke Test Build---#"
+            aws cloudformation create-stack --stack-name "$STACK_NAME" --template-body file://"$f" --capabilities CAPABILITY_NAMED_IAM
+            if [[ $? -eq 0 ]]; then
+              # Wait for create-stack to finish
+              echo  "#---Waiting for create-stack command to complete---#"
+              CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+              while [[ $CREATE_STACK_STATUS == "REVIEW_IN_PROGRESS" ]] || [[ $CREATE_STACK_STATUS == "CREATE_IN_PROGRESS" ]]
+              do
+                # Wait 15 seconds and then check stack status again
+                sleep 15
+                CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+                if [[ $CREATE_STACK_STATUS == "CREATE_FAILED" ]] || [[ $CREATE_STACK_STATUS == "ROLLBACK_IN_PROGRESS" ]]; then
+                  echo "#---Error: Deleting Smoke Test Build---#"
+                  aws cloudformation delete-stack --stack-name "$STACK_NAME"
+                  aws cloudformation wait stack-delete-complete --stack-name "$STACK_NAME"
+                  echo "#---Stopping CodeBuild---#"
+                  aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+                fi
+              done
+            else
+              echo "#---Error: Creating Smoke Test Build---#"
+              echo "#---Stopping CodeBuild---#"
+              aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+            fi
+            aws cloudformation delete-stack --stack-name "$STACK_NAME"
+            if [[ $? -eq 0 ]]; then
+              # Wait for create-stack to finish
+              echo  "#---Waiting for delete-stack command to complete---#"
+              CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+              while [[ $CREATE_STACK_STATUS == "DELETE_IN_PROGRESS" ]]
+              do
+                # Wait 15 seconds and then check stack status again
+                sleep 15
+                CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+                if [[ $CREATE_STACK_STATUS == "DELETE_FAILED" ]]; then
+                  echo "#---Error: Deleting Smoke Test Build---#"
+                  echo "#---Stopping CodeBuild---#"
+                  aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+                fi
+              done
+            else
+              echo "#---Error: Deleting Smoke Test Build---#"
+              echo "#---Stopping CodeBuild---#"
+              aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+            fi
+            aws cloudformation delete-stack --stack-name "$STACK_NAME"
+            if [[ $? -eq 0 ]]; then
+              # Wait for create-stack to finish
+              echo  "#---Waiting for delete-stack command to complete---#"
+              CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+              while [[ $CREATE_STACK_STATUS == "DELETE_IN_PROGRESS" ]]
+              do
+                # Wait 15 seconds and then check stack status again
+                sleep 15
+                CREATE_STACK_STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text)
+                if [[ $CREATE_STACK_STATUS == "DELETE_FAILED" ]]; then
+                  echo "#---Error: Deleting Smoke Test Build---#"
+                  echo "#---Stopping CodeBuild---#"
+                  aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+                fi
+              done
+            else
+              echo "#---Error: Deleting Smoke Test Build---#"
+              echo "#---Stopping CodeBuild---#"
+              aws codebuild stop-build --id "$CODEBUILD_BUILD_ID"
+            fi
+          done
+        fi
+    finally:
+      - echo "#-------Finished Template Approval-------#"
+artifacts:
+  files:
+    - '*'

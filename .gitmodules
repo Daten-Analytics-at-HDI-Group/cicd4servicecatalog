@@ -1,0 +1,3 @@
+[submodule "service_catalog/hd-cdk-helper"]
+	path = service_catalog/hd-cdk-helper
+	url = https://git.we.decodeinsurance.de/063209/hd-cdk-helper.git

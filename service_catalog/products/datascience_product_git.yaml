@@ -1,0 +1,443 @@
+Parameters:
+  AppName:
+    Type: String
+    Default: hd-datascience-product
+    Description: Name of the app
+  HDIPersonalID:
+    Type: String
+    Default: "123456"
+    Description: Enter your HDI personal ID
+  BucketName:
+    Type: String
+    Default: hd-datascience-myooes
+    Description: "
+
+      \            Enter your bucket name plus a random hash.
+
+      \            Additionally you HDI Personal
+
+      \            ID will be added to the bucket name.
+
+      \            The bucket name needs to be unique and DNS compliant.
+
+      \            "
+  RepositoryName:
+    Type: String
+    Default: hd-test-git-datascience-lkika2
+    Description: "
+
+      \            Enter the exact name of of your existing
+
+      \            CodeCommit repository
+
+      \            "
+  SagemakerInstanceTypeString:
+    Type: String
+    Default: ml.t2.medium
+    Description: "
+
+      \            Enter a Sagemaker instance identifier.
+
+      \            Theses identifier starts with 'ml.'
+
+      \            "
+Resources:
+  DataS3Bucketmaster78CACFC9:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+      BucketName:
+        Fn::Join:
+          - ""
+          - - Ref: BucketName
+            - "-"
+            - Ref: HDIPersonalID
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: app
+          Value:
+            Ref: AppName
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: So far, we do not log every private bucket.
+  DataS3BucketmasterPolicy26A91368:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: DataS3Bucketmaster78CACFC9
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Resource:
+              - Fn::GetAtt:
+                  - DataS3Bucketmaster78CACFC9
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - DataS3Bucketmaster78CACFC9
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/DataS3Bucket-master/Policy/Resource
+  CodeRepositoryBA42F94A:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName:
+        Ref: RepositoryName
+      RepositoryDescription: This repo holds your code
+      Tags:
+        - Key: app
+          Value:
+            Ref: AppName
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/CodeRepository/Resource
+  SagemakerNotebookRolemaster163CA410:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+      RoleName:
+        Fn::Join:
+          - ""
+          - - hd-mdp-role-for-sagermaker-
+            - Ref: HDIPersonalID
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: There is no direct update on existing stacks where this matters
+  KMSKeyForSagemakermasterBADB07D0:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Statement:
+          - Action:
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+              - kms:GenerateDataKey
+              - kms:TagResource
+              - kms:UntagResource
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+            Resource: "*"
+        Version: "2012-10-17"
+      Enabled: true
+      EnableKeyRotation: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/KMSKeyForSagemaker-master/Resource
+  SagemakerGitDataSciencemaster:
+    Type: AWS::SageMaker::CodeRepository
+    Properties:
+      GitConfig:
+        RepositoryUrl:
+          Fn::GetAtt:
+            - CodeRepositoryBA42F94A
+            - CloneUrlHttp
+      CodeRepositoryName:
+        Fn::Join:
+          - ""
+          - - Ref: RepositoryName
+            - "-"
+            - Ref: HDIPersonalID
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/SagemakerGitDataScience-master
+  LifeCycleConfigmaster:
+    Type: AWS::SageMaker::NotebookInstanceLifecycleConfig
+    Properties:
+      NotebookInstanceLifecycleConfigName:
+        Fn::Join:
+          - "-"
+          - - Ref: AppName
+            - Ref: HDIPersonalID
+      OnCreate:
+        - Content:
+            Fn::Base64: >-
+              #!/bin/bash
+
+
+              set -e
+
+
+              # OVERVIEW
+
+              # This script stops a SageMaker notebook once it's idle for more than 1 hour (default time)
+
+              # You can change the idle time for stop using the environment variable below.
+
+              # If you want the notebook the stop only if no browsers are open, remove the --ignore-connections flag
+
+              #
+
+              # Note that this script will fail if either condition is not met
+
+              #   1. Ensure the Notebook Instance has internet connectivity to fetch the example config
+
+              #   2. Ensure the Notebook Instance execution role permissions to SageMaker:StopNotebookInstance to stop the notebook
+
+              #       and SageMaker:DescribeNotebookInstance to describe the notebook.
+
+              #
+
+
+              # PARAMETERS
+
+              IDLE_TIME=3600
+
+
+              echo "Fetching the autostop script"
+
+              wget https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/autostop.py
+
+
+              echo "Starting the SageMaker autostop script in cron"
+
+
+              (crontab -l 2>/dev/null; echo "5 * * * * /usr/bin/python $PWD/autostop.py --time $IDLE_TIME --ignore-connections") | crontab -
+      OnStart:
+        - Content:
+            Fn::Base64: >-
+              #!/bin/bash
+
+
+              set -e
+
+
+              # OVERVIEW
+
+              # This script stops a SageMaker notebook once it's idle for more than 1 hour (default time)
+
+              # You can change the idle time for stop using the environment variable below.
+
+              # If you want the notebook the stop only if no browsers are open, remove the --ignore-connections flag
+
+              #
+
+              # Note that this script will fail if either condition is not met
+
+              #   1. Ensure the Notebook Instance has internet connectivity to fetch the example config
+
+              #   2. Ensure the Notebook Instance execution role permissions to SageMaker:StopNotebookInstance to stop the notebook
+
+              #       and SageMaker:DescribeNotebookInstance to describe the notebook.
+
+              #
+
+
+              # PARAMETERS
+
+              IDLE_TIME=3600
+
+
+              echo "Fetching the autostop script"
+
+              wget https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/autostop.py
+
+
+              echo "Starting the SageMaker autostop script in cron"
+
+
+              (crontab -l 2>/dev/null; echo "5 * * * * /usr/bin/python $PWD/autostop.py --time $IDLE_TIME --ignore-connections") | crontab -
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/LifeCycleConfig-master
+  SagemakerInstancemaster:
+    Type: AWS::SageMaker::NotebookInstance
+    Properties:
+      InstanceType:
+        Ref: SagemakerInstanceTypeString
+      RoleArn:
+        Fn::GetAtt:
+          - SagemakerNotebookRolemaster163CA410
+          - Arn
+      DefaultCodeRepository:
+        Fn::GetAtt:
+          - CodeRepositoryBA42F94A
+          - CloneUrlHttp
+      KmsKeyId:
+        Ref: KMSKeyForSagemakermasterBADB07D0
+      LifecycleConfigName:
+        Fn::GetAtt:
+          - LifeCycleConfigmaster
+          - NotebookInstanceLifecycleConfigName
+      NotebookInstanceName:
+        Fn::Join:
+          - "-"
+          - - Ref: AppName
+            - Ref: HDIPersonalID
+      Tags:
+        - Key: app
+          Value:
+            Ref: AppName
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/SagemakerInstance-master
+  SagemakerNotebookRolePolicymasterA35480BB:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codecommit:BatchAssociateApprovalRuleTemplateWithRepositories
+              - codecommit:BatchDisassociateApprovalRuleTemplateFromRepositories
+              - codecommit:BatchGet*
+              - codecommit:BatchDescribe*
+              - codecommit:Create*
+              - codecommit:DeleteBranch
+              - codecommit:DeleteFile
+              - codecommit:Describe*
+              - codecommit:DisassociateApprovalRuleTemplateFromRepository
+              - codecommit:EvaluatePullRequestApprovalRules
+              - codecommit:Get*
+              - codecommit:List*
+              - codecommit:Merge*
+              - codecommit:OverridePullRequestApprovalRules
+              - codecommit:Put*
+              - codecommit:Post*
+              - codecommit:TagResource
+              - codecommit:Test*
+              - codecommit:UntagResource
+              - codecommit:Update*
+              - codecommit:GitPull
+              - codecommit:GitPush
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - CodeRepositoryBA42F94A
+                - Arn
+          - Action:
+              - s3:List*
+              - s3:Get*
+              - s3:Put*
+              - s3:Describe*
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - DataS3Bucketmaster78CACFC9
+                - Arn
+        Version: "2012-10-17"
+      PolicyName:
+        Fn::Join:
+          - ""
+          - - hd-policy-for-sagermaker-notebook-
+            - Ref: HDIPersonalID
+      Roles:
+        - Ref: SagemakerNotebookRolemaster163CA410
+    Metadata:
+      aws:cdk:path: hd-datascience-product-git-master/SagemakerNotebookRolePolicy-master/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.49.1,@aws-cdk/assets=1.48.0,@aws-cdk/aws-apigateway=1.48.0,@aws-cdk/aws-applicationautoscaling=1.48.0,@aws-cdk/aws-autoscaling=1.48.0,@aws-cdk/aws-autoscaling-common=1.48.0,@aws-cdk/aws-autoscaling-hooktargets=1.48.0,@aws-cdk/aws-batch=1.48.0,@aws-cdk/aws-budgets=1.48.0,@aws-cdk/aws-certificatemanager=1.48.0,@aws-cdk/aws-cloudformation=1.48.0,@aws-cdk/aws-cloudfront=1.48.0,@aws-cdk/aws-cloudwatch=1.48.0,@aws-cdk/aws-cloudwatch-actions=1.48.0,@aws-cdk/aws-codebuild=1.48.0,@aws-cdk/aws-codecommit=1.48.0,@aws-cdk/aws-codedeploy=1.48.0,@aws-cdk/aws-codepipeline=1.48.0,@aws-cdk/aws-codepipeline-actions=1.48.0,@aws-cdk/aws-cognito=1.48.0,@aws-cdk/aws-dynamodb=1.48.0,@aws-cdk/aws-ec2=1.48.0,@aws-cdk/aws-ecr=1.48.0,@aws-cdk/aws-ecr-assets=1.48.0,@aws-cdk/aws-ecs=1.48.0,@aws-cdk/aws-elasticloadbalancing=1.48.0,@aws-cdk/aws-elasticloadbalancingv2=1.48.0,@aws-cdk/aws-events=1.48.0,@aws-cdk/aws-events-targets=1.48.0,@aws-cdk/aws-glue=1.48.0,@aws-cdk/aws-iam=1.48.0,@aws-cdk/aws-kinesis=1.48.0,@aws-cdk/aws-kms=1.48.0,@aws-cdk/aws-lambda=1.48.0,@aws-cdk/aws-lambda-event-sources=1.48.0,@aws-cdk/aws-logs=1.48.0,@aws-cdk/aws-route53=1.48.0,@aws-cdk/aws-route53-targets=1.48.0,@aws-cdk/aws-s3=1.48.0,@aws-cdk/aws-s3-assets=1.48.0,@aws-cdk/aws-s3-notifications=1.48.0,@aws-cdk/aws-sagemaker=1.48.0,@aws-cdk/aws-sam=1.48.0,@aws-cdk/aws-secretsmanager=1.48.0,@aws-cdk/aws-servicecatalog=1.48.0,@aws-cdk/aws-servicediscovery=1.48.0,@aws-cdk/aws-sns=1.48.0,@aws-cdk/aws-sns-subscriptions=1.48.0,@aws-cdk/aws-sqs=1.48.0,@aws-cdk/aws-ssm=1.48.0,@aws-cdk/aws-stepfunctions=1.48.0,@aws-cdk/cloud-assembly-schema=1.48.0,@aws-cdk/core=1.48.0,@aws-cdk/custom-resources=1.48.0,@aws-cdk/cx-api=1.48.0,@aws-cdk/region-info=1.48.0,jsii-runtime=Python/3.7.7
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2

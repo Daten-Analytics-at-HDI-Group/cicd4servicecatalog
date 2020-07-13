@@ -1,0 +1,2 @@
+-e .
+./service_catalog/hd-cdk-helper

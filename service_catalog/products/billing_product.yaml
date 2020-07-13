@@ -1,0 +1,294 @@
+Parameters:
+  AppNameBilling:
+    Type: String
+    Default: StandardMDPBillingApp
+    Description: Billing alerts and reports via Lambda, Budgets, SNS and S3. So far the email is unformatted.
+  EnvNameBilling:
+    Type: String
+    Default: Automation
+    Description: Name of the environment
+  Email:
+    Type: String
+    Default: YOUR@EMAIL.COM
+    Description: "An email address. Best suited: HDI email distributor, because of the 10 subscription hard limit."
+Resources:
+  Budget100:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 100
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-100
+  Budget250:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 250
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-250
+  Budget500:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 500
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-500
+  Budget750:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 750
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-750
+  Budget1000:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 1000
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-1000
+  Budget1500:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 1500
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-1500
+  Budget2000:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 2000
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-2000
+  Budget3000:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 3000
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-3000
+  Budget4000:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 4000
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-4000
+  Budget5000:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: 5000
+          Unit: USD
+        BudgetType: COST
+        TimeUnit: MONTHLY
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address:
+                Ref: Email
+              SubscriptionType: EMAIL
+    Metadata:
+      aws:cdk:path: hd-billing-alerts-product/Budget-5000
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.46.0,@aws-cdk/assets=1.46.0,@aws-cdk/aws-apigateway=1.46.0,@aws-cdk/aws-applicationautoscaling=1.46.0,@aws-cdk/aws-autoscaling=1.46.0,@aws-cdk/aws-autoscaling-common=1.46.0,@aws-cdk/aws-autoscaling-hooktargets=1.46.0,@aws-cdk/aws-batch=1.46.0,@aws-cdk/aws-budgets=1.46.0,@aws-cdk/aws-certificatemanager=1.46.0,@aws-cdk/aws-cloudformation=1.46.0,@aws-cdk/aws-cloudfront=1.46.0,@aws-cdk/aws-cloudwatch=1.46.0,@aws-cdk/aws-cloudwatch-actions=1.46.0,@aws-cdk/aws-codebuild=1.46.0,@aws-cdk/aws-codecommit=1.46.0,@aws-cdk/aws-codedeploy=1.46.0,@aws-cdk/aws-codepipeline=1.46.0,@aws-cdk/aws-codepipeline-actions=1.46.0,@aws-cdk/aws-cognito=1.46.0,@aws-cdk/aws-dynamodb=1.46.0,@aws-cdk/aws-ec2=1.46.0,@aws-cdk/aws-ecr=1.46.0,@aws-cdk/aws-ecr-assets=1.46.0,@aws-cdk/aws-ecs=1.46.0,@aws-cdk/aws-elasticloadbalancing=1.46.0,@aws-cdk/aws-elasticloadbalancingv2=1.46.0,@aws-cdk/aws-events=1.46.0,@aws-cdk/aws-events-targets=1.46.0,@aws-cdk/aws-glue=1.46.0,@aws-cdk/aws-iam=1.46.0,@aws-cdk/aws-kinesis=1.46.0,@aws-cdk/aws-kms=1.46.0,@aws-cdk/aws-lambda=1.46.0,@aws-cdk/aws-lambda-event-sources=1.46.0,@aws-cdk/aws-logs=1.46.0,@aws-cdk/aws-route53=1.46.0,@aws-cdk/aws-route53-targets=1.46.0,@aws-cdk/aws-s3=1.46.0,@aws-cdk/aws-s3-assets=1.46.0,@aws-cdk/aws-s3-notifications=1.46.0,@aws-cdk/aws-sagemaker=1.46.0,@aws-cdk/aws-sam=1.46.0,@aws-cdk/aws-secretsmanager=1.46.0,@aws-cdk/aws-servicecatalog=1.46.0,@aws-cdk/aws-servicediscovery=1.46.0,@aws-cdk/aws-sns=1.46.0,@aws-cdk/aws-sns-subscriptions=1.46.0,@aws-cdk/aws-sqs=1.46.0,@aws-cdk/aws-ssm=1.46.0,@aws-cdk/aws-stepfunctions=1.46.0,@aws-cdk/cdk-assets-schema=1.46.0,@aws-cdk/cloud-assembly-schema=1.46.0,@aws-cdk/core=1.46.0,@aws-cdk/custom-resources=1.46.0,@aws-cdk/cx-api=1.46.0,@aws-cdk/region-info=1.46.0,jsii-runtime=Python/3.7.7
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
