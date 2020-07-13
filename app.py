@@ -52,7 +52,7 @@ for branch in branches:
 # Branching concept for Products
 # ##############################################################
 
-product_branch = "dmz"
+product_branch = "feature"
 
 ReportStack(
     app, "hd-billing-alerts-product-{}".format(product_branch), branch=product_branch

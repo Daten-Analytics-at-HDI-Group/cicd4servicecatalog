@@ -8,7 +8,7 @@ Parameters:
     Default: YOUR@EMAIL.COM
     Description: "An email address. Best suited: HDI email distributor, because of the 10 subscription hard limit."
 Resources:
-  Budget100dmz:
+  Budget100feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -28,8 +28,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-100-dmz
-  Budget250dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-100-feature
+  Budget250feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -49,8 +49,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-250-dmz
-  Budget500dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-250-feature
+  Budget500feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -70,8 +70,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-500-dmz
-  Budget750dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-500-feature
+  Budget750feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -91,8 +91,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-750-dmz
-  Budget1000dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-750-feature
+  Budget1000feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -112,8 +112,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-1000-dmz
-  Budget1500dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-1000-feature
+  Budget1500feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -133,8 +133,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-1500-dmz
-  Budget2000dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-1500-feature
+  Budget2000feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -154,8 +154,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-2000-dmz
-  Budget3000dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-2000-feature
+  Budget3000feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -175,8 +175,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-3000-dmz
-  Budget4000dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-3000-feature
+  Budget4000feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -196,8 +196,8 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-4000-dmz
-  Budget5000dmz:
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-4000-feature
+  Budget5000feature:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
@@ -217,7 +217,7 @@ Resources:
                 Ref: EmailDistributor
               SubscriptionType: EMAIL
     Metadata:
-      aws:cdk:path: hd-billing-alerts-product-dmz/Budget-5000-dmz
+      aws:cdk:path: hd-billing-alerts-product-feature/Budget-5000-feature
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
