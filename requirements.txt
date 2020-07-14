@@ -1,2 +1,5 @@
 -e .
 ./service_catalog/hd-cdk-helper
+./service_catalog/sc-helper
+pdoc3
+pandas

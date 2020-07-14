@@ -2,12 +2,10 @@
 
 from aws_cdk import core
 
-from service_catalog.products.service_catalog_cicd_stack import ServiceCatalogCICDStack
-from service_catalog.products.service_catalog_cicd_dependency import (
-    ServiceCatalogCICDDependency,
-)
-from service_catalog.products.billing_report_stack import ReportStack
-from service_catalog.products.sagemaker_with_git import SagemakerDevGit
+from service_catalog.service_catalog_cicd_stack import ServiceCatalogCICDStack
+from service_catalog.service_catalog_cicd_dependency import ServiceCatalogCICDDependency
+from service_catalog.billing_report_stack import ReportStack
+from service_catalog.sagemaker_with_git import SagemakerDevGit
 
 # ===============================
 # MDP Account IDs
@@ -22,7 +20,6 @@ app = core.App()
 
 # TODO: Changes feature/name_of_feature accordingly
 branches = ["master", "dmz", "feature-billing"]
-environments = ["root", "sandbox"]
 
 for branch in branches:
     ServiceCatalogCICDStack(
@@ -32,6 +29,8 @@ for branch in branches:
         sandbox_account=sandbox_account_id,
     )
 
+# TODO: Multi Account
+# environments = ["root", "sandbox"]
 # PORTFOLIO_ID_MASTER = "port-2hlps2tljtefa"
 # PORTFOLIO_ID_DMZ = "port-f3a2s5istcfuy"
 # PORTFOLIO_ID_FEATURE = "port-23etv2zibn3ck"
